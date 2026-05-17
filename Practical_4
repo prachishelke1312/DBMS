@@ -1,0 +1,326 @@
+
+-- =====================================================
+-- a) SUPPLIER, PARTS, SHIPMENTS
+-- =====================================================
+
+-- Create Supplier table
+
+CREATE TABLE Supplier (
+    SNO INT PRIMARY KEY,
+    Sname VARCHAR(50),
+    Status VARCHAR(20),
+    City VARCHAR(30)
+);
+
+-- Create Parts table
+
+CREATE TABLE Parts (
+    PNO INT PRIMARY KEY,
+    Pname VARCHAR(50),
+    Color VARCHAR(20),
+    Weight INT,
+    City VARCHAR(30)
+);
+
+-- Create Shipments table
+
+CREATE TABLE Shipments (
+    SNO INT,
+    PNO INT,
+    QTY INT
+);
+
+
+
+-- Insert data into Supplier
+
+INSERT INTO Supplier VALUES
+(1, 'Amit', 'Active', 'Mumbai'),
+(2, 'Ravi', 'Active', 'Pune'),
+(3, 'Neha', 'Inactive', 'Mumbai');
+
+
+
+-- Insert data into Parts
+
+INSERT INTO Parts VALUES
+(1692, 'Bolt', 'Green', 15, 'Delhi'),
+(2001, 'Nut', 'Red', 10, 'Pune'),
+(3001, 'Screw', 'Green', 20, 'Mumbai');
+
+
+
+-- Insert data into Shipments
+
+INSERT INTO Shipments VALUES
+(1, 1692, 100),
+(2, 2001, 250),
+(3, 3001, 180),
+(1, 3001, 140);
+
+
+
+-- =====================================================
+-- i) Shipment information where quantity < 157
+-- =====================================================
+
+SELECT s.SNO,
+       s.Sname,
+       p.PNO,
+       p.Pname,
+       sh.QTY
+FROM Supplier s
+JOIN Shipments sh
+ON s.SNO = sh.SNO
+JOIN Parts p
+ON sh.PNO = p.PNO
+WHERE sh.QTY < 157;
+
+
+
+-- =====================================================
+-- ii) Suppliers who shipped quantity greater than average
+-- =====================================================
+
+SELECT s.SNO,
+       s.Sname,
+       p.PNO,
+       p.Pname
+FROM Supplier s
+JOIN Shipments sh
+ON s.SNO = sh.SNO
+JOIN Parts p
+ON sh.PNO = p.PNO
+WHERE sh.QTY >
+      (SELECT AVG(QTY)
+       FROM Shipments);
+
+
+
+-- =====================================================
+-- iii) Total quantity of green part PNO 1692
+-- shipped by suppliers from Mumbai
+-- =====================================================
+
+SELECT SUM(sh.QTY) AS Total_Quantity
+FROM Supplier s
+JOIN Shipments sh
+ON s.SNO = sh.SNO
+JOIN Parts p
+ON sh.PNO = p.PNO
+WHERE p.PNO = 1692
+AND p.Color = 'Green'
+AND s.City = 'Mumbai';
+
+
+
+-- =====================================================
+-- b) EMP, DEPT, ADDRESS
+-- =====================================================
+
+-- Create Emp table
+
+CREATE TABLE Emp (
+    Emp_no INT PRIMARY KEY,
+    Emp_name VARCHAR(50),
+    Dept_no INT
+);
+
+
+
+-- Create Dept table
+
+CREATE TABLE Dept (
+    Dept_no INT PRIMARY KEY,
+    Dept_name VARCHAR(50)
+);
+
+
+
+-- Create Address table
+
+CREATE TABLE Address (
+    Dept_name VARCHAR(50),
+    Dept_location VARCHAR(50)
+);
+
+
+
+-- Insert data into Dept
+
+INSERT INTO Dept VALUES
+(10, 'IT'),
+(20, 'HR'),
+(30, 'Finance');
+
+
+
+-- Insert data into Emp
+
+INSERT INTO Emp VALUES
+(1, 'Ram', 10),
+(2, 'Shyam', 20),
+(3, 'Rita', 10);
+
+
+
+-- Insert data into Address
+
+INSERT INTO Address VALUES
+('IT', 'Mumbai'),
+('HR', 'Pune'),
+('Finance', 'Delhi');
+
+
+
+-- =====================================================
+-- i) Department location where Ram works
+-- =====================================================
+
+SELECT a.Dept_location
+FROM Emp e
+JOIN Dept d
+ON e.Dept_no = d.Dept_no
+JOIN Address a
+ON d.Dept_name = a.Dept_name
+WHERE e.Emp_name = 'Ram';
+
+
+
+-- =====================================================
+-- ii) Create view for total employees in each department
+-- =====================================================
+
+CREATE VIEW Dept_Count AS
+SELECT d.Dept_name,
+       COUNT(e.Emp_no) AS Total_Employees
+FROM Dept d
+LEFT JOIN Emp e
+ON d.Dept_no = e.Dept_no
+GROUP BY d.Dept_name
+ORDER BY Total_Employees ASC;
+
+
+
+-- View data
+
+SELECT * FROM Dept_Count;
+
+
+
+-- =====================================================
+-- iii) Department where no employee works
+-- =====================================================
+
+SELECT d.Dept_name
+FROM Dept d
+LEFT JOIN Emp e
+ON d.Dept_no = e.Dept_no
+WHERE e.Emp_no IS NULL;
+
+
+
+-- =====================================================
+-- c) MOVIES, DIRECTOR, RATING
+-- =====================================================
+
+-- Create MOVIES table
+
+CREATE TABLE MOVIES (
+    Mov_Id INT PRIMARY KEY,
+    Mov_Title VARCHAR(50),
+    Mov_Year INT,
+    Dir_Id INT
+);
+
+
+
+-- Create DIRECTOR table
+
+CREATE TABLE DIRECTOR (
+    Dir_Id INT PRIMARY KEY,
+    Dir_Name VARCHAR(50)
+);
+
+
+
+-- Create RATING table
+
+CREATE TABLE RATING (
+    MOV_Id INT,
+    Rev_Stars INT
+);
+
+
+
+-- Insert into DIRECTOR
+
+INSERT INTO DIRECTOR VALUES
+(1, 'RAJ KAPOOR'),
+(2, 'Steven Spielberg'),
+(3, 'Karan Johar');
+
+
+
+-- Insert into MOVIES
+
+INSERT INTO MOVIES VALUES
+(101, 'Awara', 1951, 1),
+(102, 'Jurassic Park', 1993, 2),
+(103, 'DDLJ', 1995, 3);
+
+
+
+-- Insert into RATING
+
+INSERT INTO RATING VALUES
+(101, 8),
+(102, 7),
+(103, 9);
+
+
+
+-- =====================================================
+-- i) Movies directed by RAJ KAPOOR
+-- =====================================================
+
+SELECT m.Mov_Title
+FROM MOVIES m
+JOIN DIRECTOR d
+ON m.Dir_Id = d.Dir_Id
+WHERE d.Dir_Name = 'RAJ KAPOOR';
+
+
+
+-- =====================================================
+-- ii) Movie names and stars
+-- sorted by title and higher stars first
+-- =====================================================
+
+SELECT m.Mov_Title,
+       r.Rev_Stars
+FROM MOVIES m
+JOIN RATING r
+ON m.Mov_Id = r.MOV_Id
+ORDER BY m.Mov_Title ASC,
+         r.Rev_Stars DESC;
+
+
+
+-- =====================================================
+-- iii) Set rating = 9 for Steven Spielberg movies
+-- =====================================================
+
+UPDATE RATING
+SET Rev_Stars = 9
+WHERE MOV_Id IN
+(
+    SELECT m.Mov_Id
+    FROM MOVIES m
+    JOIN DIRECTOR d
+    ON m.Dir_Id = d.Dir_Id
+    WHERE d.Dir_Name = 'Steven Spielberg'
+);
+-- Check updated ratings
+
+SELECT * FROM RATING;
