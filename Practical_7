@@ -1,0 +1,136 @@
+
+CREATE TABLE Student_fee_details(
+rollno INT PRIMARY KEY,
+name VARCHAR(50),
+fee_deposited INT,
+fee_date DATE
+);
+
+CREATE TABLE Student_fee_details_old(
+rollno INT,
+name VARCHAR(50),
+fee_deposited INT,
+fee_date DATE,
+updated_on DATETIME
+);
+
+DELIMITER //
+
+CREATE TRIGGER trg_student_fee_update
+BEFORE UPDATE
+ON Student_fee_details
+FOR EACH ROW
+BEGIN
+
+INSERT INTO Student_fee_details_old
+VALUES(
+OLD.rollno,
+OLD.name,
+OLD.fee_deposited,
+OLD.fee_date,
+NOW()
+);
+
+END //
+
+DELIMITER ;
+
+INSERT INTO Student_fee_details
+VALUES(1,'Rahul',5000,'2026-05-06');
+
+UPDATE Student_fee_details
+SET fee_deposited = 7000
+WHERE rollno = 1;
+
+SELECT * FROM Student_fee_details_old;
+
+
+B)
+CREATE TABLE Library(
+book_id INT PRIMARY KEY,
+book_name VARCHAR(50),
+author VARCHAR(50),
+price INT
+);
+
+CREATE TABLE Library_Audit(
+audit_id INT AUTO_INCREMENT PRIMARY KEY,
+book_id INT,
+book_name VARCHAR(50),
+author VARCHAR(50),
+price INT,
+action_type VARCHAR(20),
+action_date DATETIME
+);
+
+DELIMITER //
+
+CREATE TRIGGER trg_library_update
+BEFORE UPDATE
+ON Library
+FOR EACH ROW
+BEGIN
+
+INSERT INTO Library_Audit
+(
+book_id,
+book_name,
+author,
+price,
+action_type,
+action_date
+)
+
+VALUES
+(
+OLD.book_id,
+OLD.book_name,
+OLD.author,
+OLD.price,
+'UPDATE',
+NOW()
+);
+
+END //
+
+CREATE TRIGGER trg_library_delete
+BEFORE DELETE
+ON Library
+FOR EACH ROW
+BEGIN
+
+INSERT INTO Library_Audit
+(
+book_id,
+book_name,
+author,
+price,
+action_type,
+action_date
+)
+
+VALUES
+(
+OLD.book_id,
+OLD.book_name,
+OLD.author,
+OLD.price,
+'DELETE',
+NOW()
+);
+
+END //
+
+DELIMITER ;
+
+INSERT INTO Library
+VALUES(1,'DBMS','Korth',500);
+
+UPDATE Library
+SET price = 600
+WHERE book_id = 1;
+
+DELETE FROM Library
+WHERE book_id = 1;
+
+SELECT * FROM Library_Audit;
