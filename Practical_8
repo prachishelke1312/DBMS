@@ -1,0 +1,160 @@
+// ============================================
+// Create Database
+// ============================================
+
+use studentDB;
+
+
+
+// ============================================
+// Create students collection and insert data
+// ============================================
+
+db.students.insertMany([
+    {
+        _id: 1,
+        name: "Amit",
+        age: 19,
+        course: "Computer Science",
+        marks: 78
+    },
+    {
+        _id: 2,
+        name: "Sneha",
+        age: 20,
+        course: "IT",
+        marks: 65
+    },
+    {
+        _id: 3,
+        name: "Rahul",
+        age: 18,
+        course: "Computer Science",
+        marks: 85
+    },
+    {
+        _id: 4,
+        name: "Neha",
+        age: 21,
+        course: "Electronics",
+        marks: 35
+    },
+    {
+        _id: 5,
+        name: "Kiran",
+        age: 19,
+        course: "Mechanical",
+        marks: 90
+    }
+]);
+
+
+
+// ============================================
+// a) Insert multiple documents
+// ============================================
+
+db.students.insertMany([
+    {
+        _id: 6,
+        name: "Priya",
+        age: 22,
+        course: "Civil",
+        marks: 72
+    },
+    {
+        _id: 7,
+        name: "Arjun",
+        age: 20,
+        course: "Computer Science",
+        marks: 88
+    }
+]);
+
+
+
+// ============================================
+// b) Retrieve all documents
+// ============================================
+
+db.students.find();
+
+
+
+// ============================================
+// c) Find students with marks > 70
+// ============================================
+
+db.students.find(
+    { marks: { $gt: 70 } }
+);
+
+
+
+// ============================================
+// d) Course = 'Computer Science'
+// AND marks > 75
+// ============================================
+
+db.students.find(
+    {
+        $and: [
+            { course: "Computer Science" },
+            { marks: { $gt: 75 } }
+        ]
+    }
+);
+
+
+
+// ============================================
+// e) Age < 20 OR marks > 80
+// ============================================
+
+db.students.find(
+    {
+        $or: [
+            { age: { $lt: 20 } },
+            { marks: { $gt: 80 } }
+        ]
+    }
+);
+
+
+
+// ============================================
+// f) Update marks of student named 'Amit'
+// ============================================
+
+db.students.updateOne(
+    { name: "Amit" },
+    { $set: { marks: 95 } }
+);
+
+
+
+// ============================================
+// g) Delete students with marks < 40
+// ============================================
+
+db.students.deleteMany(
+    { marks: { $lt: 40 } }
+);
+
+
+
+// ============================================
+// h) Delete student named 'Sneha'
+// ============================================
+
+db.students.deleteOne(
+    { name: "Sneha" }
+);
+
+
+
+// ============================================
+// Display final documents
+// ============================================
+
+db.students.find();
