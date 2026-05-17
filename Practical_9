@@ -1,0 +1,146 @@
+
+// ============================================
+// Create Database
+// ============================================
+
+use studentDB;
+
+
+
+// ============================================
+// Create students collection and insert data
+// ============================================
+
+db.students.insertMany([
+    {
+        _id: 1,
+        name: "Amit",
+        department: "Computer Science",
+        marks: 85,
+        city: "Mumbai"
+    },
+    {
+        _id: 2,
+        name: "Sneha",
+        department: "IT",
+        marks: 72,
+        city: "Pune"
+    },
+    {
+        _id: 3,
+        name: "Rahul",
+        department: "Computer Science",
+        marks: 90,
+        city: "Mumbai"
+    },
+    {
+        _id: 4,
+        name: "Neha",
+        department: "Electronics",
+        marks: 65,
+        city: "Delhi"
+    },
+    {
+        _id: 5,
+        name: "Kiran",
+        department: "IT",
+        marks: 88,
+        city: "Pune"
+    }
+]);
+
+
+
+// ============================================
+// a) Total marks for each department
+// ============================================
+
+db.students.aggregate([
+    {
+        $group: {
+            _id: "$department",
+            total_marks: { $sum: "$marks" }
+        }
+    }
+]);
+
+
+
+// ============================================
+// b) Average marks in each department
+// ============================================
+
+db.students.aggregate([
+    {
+        $group: {
+            _id: "$department",
+            average_marks: { $avg: "$marks" }
+        }
+    }
+]);
+
+
+
+// ============================================
+// c) Maximum marks in each department
+// ============================================
+
+db.students.aggregate([
+    {
+        $group: {
+            _id: "$department",
+            maximum_marks: { $max: "$marks" }
+        }
+    }
+]);
+
+
+
+// ============================================
+// d) Count students in each city
+// ============================================
+
+db.students.aggregate([
+    {
+        $group: {
+            _id: "$city",
+            total_students: { $sum: 1 }
+        }
+    }
+]);
+
+
+
+// ============================================
+// e) Create index on name field
+// ============================================
+
+db.students.createIndex(
+    { name: 1 }
+);
+
+
+
+// ============================================
+// Display indexes
+// ============================================
+
+db.students.getIndexes();
+
+
+
+// ============================================
+// f) Drop index from collection
+// ============================================
+
+db.students.dropIndex(
+    { name: 1 }
+);
+
+
+
+// ============================================
+// Display indexes after dropping
+// ============================================
+
+db.students.getIndexes();
