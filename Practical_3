@@ -1,0 +1,79 @@
+
+-- Create Employee table
+
+CREATE TABLE Employee (
+    emp_id INT PRIMARY KEY,
+    name VARCHAR(50),
+    salary DECIMAL(10,2),
+    department VARCHAR(30),
+    city VARCHAR(30)
+);
+
+-- Insert sample data
+
+INSERT INTO Employee (emp_id, name, salary, department, city) VALUES
+(101, 'Amit', 60000, 'IT', 'Mumbai'),
+(102, 'Neha', 45000, 'HR', 'Pune'),
+(103, 'Arjun', 70000, 'Finance', 'Delhi'),
+(104, 'Sneha', 55000, 'IT', 'Bangalore'),
+(105, 'Anjali', 40000, 'HR', 'Chennai'),
+(106, 'Rahul', 80000, 'Finance', 'Hyderabad'),
+(107, 'Priya', 50000, 'Marketing', 'Kolkata');
+
+
+
+-- a) Total salary paid in each department
+
+SELECT department,
+       SUM(salary) AS total_salary
+FROM Employee
+GROUP BY department;
+
+
+
+-- b) Average salary of employees in each department
+
+SELECT department,
+       AVG(salary) AS average_salary
+FROM Employee
+GROUP BY department;
+
+
+
+-- c) Maximum and minimum salary in each department
+
+SELECT department,
+       MAX(salary) AS maximum_salary,
+       MIN(salary) AS minimum_salary
+FROM Employee
+GROUP BY department;
+
+
+
+-- d) Count the number of employees in each department
+
+SELECT department,
+       COUNT(*) AS employee_count
+FROM Employee
+GROUP BY department;
+
+
+
+-- e) Departments where average salary is greater than 50,000
+
+SELECT department,
+       AVG(salary) AS average_salary
+FROM Employee
+GROUP BY department
+HAVING AVG(salary) > 50000;
+
+
+
+-- f) Department with the highest total salary
+
+SELECT department,
+       SUM(salary) AS total_salary
+FROM Employee
+GROUP BY department
+ORDER BY total_salary DESC
+LIMIT 1;
