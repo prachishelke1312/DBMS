@@ -1,0 +1,150 @@
+-- a) Create Employee table and insert at least 5 records
+
+CREATE TABLE Employee (
+    emp_id INT PRIMARY KEY,
+    name VARCHAR(50),
+    salary DECIMAL(10,2),
+    department VARCHAR(30),
+    city VARCHAR(30)
+);
+
+INSERT INTO Employee (emp_id, name, salary, department, city) VALUES
+(101, 'Amit', 45000, 'IT', 'Mumbai'),
+(102, 'Neha', 32000, 'HR', 'Pune'),
+(103, 'Arjun', 18000, 'Finance', 'Delhi'),
+(104, 'Sneha', 55000, 'IT', 'Bangalore'),
+(105, 'Anjali', 25000, 'Marketing', 'Chennai');
+
+
+
+-- b) Update salary by 10% for employees in IT department
+
+UPDATE Employee
+SET salary = salary * 1.10
+WHERE department = 'IT';
+
+
+
+-- c) Delete employees whose salary is less than 20,000
+
+DELETE FROM Employee
+WHERE salary < 20000;
+
+
+
+-- d)(i) Display employees with salary between 30,000 and 60,000
+
+SELECT *
+FROM Employee
+WHERE salary BETWEEN 30000 AND 60000;
+
+
+
+-- d)(ii) Display employees from HR or Finance department
+
+SELECT *
+FROM Employee
+WHERE department = 'HR'
+   OR department = 'Finance';
+
+
+
+-- e) Find employees whose names start with 'A'
+
+SELECT *
+FROM Employee
+WHERE name LIKE 'A%';
+
+
+
+-- f) Display employee names in uppercase and annual salary
+
+SELECT
+    UPPER(name) AS employee_name,
+    salary * 12 AS annual_salary
+FROM Employee;
+
+
+
+-- g) Retrieve unique departments
+
+SELECT DISTINCT department
+FROM Employee;
+
+
+
+-- h) Combine Employee and Manager table results using UNION
+
+-- Create Manager table
+CREATE TABLE Manager (
+    emp_id INT,
+    name VARCHAR(50)
+);
+
+INSERT INTO Manager VALUES
+(201, 'Rahul'),
+(202, 'Priya');
+
+-- UNION query
+SELECT name FROM Employee
+UNION
+SELECT name FROM Manager;
+
+
+
+-- i) Create user1 and grant SELECT and INSERT permissions
+
+CREATE USER user1 IDENTIFIED BY 'password123';
+
+GRANT SELECT, INSERT
+ON Employee
+TO user1;
+
+
+
+-- j) Revoke INSERT permission from user1
+
+REVOKE INSERT
+ON Employee
+FROM user1;
+
+
+
+-- k) Start transaction, insert record, and COMMIT
+
+START TRANSACTION;
+
+INSERT INTO Employee
+VALUES (106, 'Karan', 40000, 'IT', 'Hyderabad');
+
+COMMIT;
+
+
+
+-- l) Start transaction, update salary, and ROLLBACK
+
+START TRANSACTION;
+
+UPDATE Employee
+SET salary = salary + 5000
+WHERE emp_id = 102;
+
+ROLLBACK;
+
+
+
+-- m) Use SAVEPOINT and rollback to savepoint
+
+START TRANSACTION;
+
+INSERT INTO Employee
+VALUES (107, 'Meera', 38000, 'HR', 'Kolkata');
+
+SAVEPOINT sp1;
+
+INSERT INTO Employee
+VALUES (108, 'Rohit', 42000, 'Finance', 'Jaipur');
+
+ROLLBACK TO sp1;
+
+COMMIT;
